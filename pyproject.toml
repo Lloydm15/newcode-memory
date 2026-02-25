@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "newcode-memory"
+version = "0.1.0"
+description = "Memory system for Claude Code — captures conversations, extracts facts, retrieves memories, runs feedback judge"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.0.0",
+    "httpx>=0.27.0",
+]
+
+[project.scripts]
+newcode-memory = "newcode_memory.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+newcode_memory = ["hooks/*.sh"]

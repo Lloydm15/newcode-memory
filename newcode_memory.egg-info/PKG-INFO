@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: newcode-memory
+Version: 0.1.0
+Summary: Memory system for Claude Code — captures conversations, extracts facts, retrieves memories, runs feedback judge
+Requires-Python: >=3.10
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: httpx>=0.27.0

@@ -1,0 +1,13 @@
+pyproject.toml
+newcode_memory/__init__.py
+newcode_memory/cli.py
+newcode_memory/mcp_server.py
+newcode_memory.egg-info/PKG-INFO
+newcode_memory.egg-info/SOURCES.txt
+newcode_memory.egg-info/dependency_links.txt
+newcode_memory.egg-info/entry_points.txt
+newcode_memory.egg-info/requires.txt
+newcode_memory.egg-info/top_level.txt
+newcode_memory/hooks/__init__.py
+newcode_memory/hooks/auto-ingest.sh
+newcode_memory/hooks/capture-prompt.sh

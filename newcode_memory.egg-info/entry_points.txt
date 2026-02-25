@@ -1,0 +1,2 @@
+[console_scripts]
+newcode-memory = newcode_memory.cli:main
