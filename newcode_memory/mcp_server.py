@@ -8,6 +8,7 @@ Calls the newcode HTTP API instead of using Mem0 directly.
 
 import json
 import os
+import socket
 import sys
 from uuid import uuid4
 
@@ -16,6 +17,9 @@ from mcp.server.fastmcp import FastMCP
 
 # Server URL — set via environment variable or default to localhost
 API_BASE = os.environ.get("NEWCODE_SERVER_URL", "http://localhost:4000")
+
+# Machine identifier — hostname of whatever computer is running this MCP server
+_MACHINE_NAME = socket.gethostname()
 
 # Session-level conversation ID — all tool calls in one MCP session share the same ID.
 _session_conversation_id = str(uuid4())
@@ -85,6 +89,7 @@ async def store_conversation(
             ],
             "user_id": user_id,
             "conversation_id": conv_id,
+            "source_machine": _MACHINE_NAME,
         })
         data = r.json()
 

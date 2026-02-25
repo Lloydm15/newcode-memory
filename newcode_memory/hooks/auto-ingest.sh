@@ -51,6 +51,9 @@ else
   CONV_ID="claude-code-${SESSION_ID}"
 fi
 
+# Machine identifier — hostname of whatever computer is running this hook
+MACHINE_NAME=$(hostname 2>/dev/null || echo "unknown")
+
 # POST to newcode ingest endpoint
 curl -s -X POST "${SERVER_URL}/ingest" \
   -H "Content-Type: application/json" \
@@ -59,13 +62,15 @@ curl -s -X POST "${SERVER_URL}/ingest" \
     --arg user "$USER_MSG" \
     --arg assistant "$ASSISTANT_MSG" \
     --arg conv_id "$CONV_ID" \
+    --arg machine "$MACHINE_NAME" \
     '{
       messages: [
         {role: "user", content: $user},
         {role: "assistant", content: $assistant}
       ],
       user_id: "lloyd",
-      conversation_id: $conv_id
+      conversation_id: $conv_id,
+      source_machine: $machine
     }')" > /dev/null 2>&1 || true
 
 # Run the feedback judge
