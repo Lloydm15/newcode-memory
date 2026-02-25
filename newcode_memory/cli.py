@@ -70,16 +70,20 @@ def install(server_url: str):
     hooks_dir = _hooks_dir()
     pkg_hooks = _package_hooks_dir()
 
-    # Copy hook scripts
-    for script_name in ["capture-prompt.sh", "auto-ingest.sh"]:
+    # Copy hook scripts (Python for cross-platform compatibility)
+    for script_name in ["capture-prompt.py", "auto-ingest.py"]:
         src = pkg_hooks / script_name
         dst = hooks_dir / script_name
         copy2(src, dst)
-        # Make executable
-        dst.chmod(dst.stat().st_mode | stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH)
+        # Make executable on Unix
+        try:
+            dst.chmod(dst.stat().st_mode | stat.S_IEXEC | stat.S_IXGRP | stat.S_IXOTH)
+        except OSError:
+            pass
 
-    capture_path = str(hooks_dir / "capture-prompt.sh")
-    ingest_path = str(hooks_dir / "auto-ingest.sh")
+    python = _python_path()
+    capture_path = str(hooks_dir / "capture-prompt.py")
+    ingest_path = str(hooks_dir / "auto-ingest.py")
 
     # -- Wire hooks into ~/.claude/settings.json --
     settings_path = _claude_dir() / "settings.json"
@@ -90,7 +94,7 @@ def install(server_url: str):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": capture_path,
+                            "command": f"{python} {capture_path}",
                             "timeout": 5,
                         }
                     ]
@@ -101,7 +105,7 @@ def install(server_url: str):
                     "hooks": [
                         {
                             "type": "command",
-                            "command": f"NEWCODE_SERVER_URL={server_url} {ingest_path}",
+                            "command": f"{python} {ingest_path} --server {server_url}",
                             "timeout": 30,
                         }
                     ]
