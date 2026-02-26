@@ -81,9 +81,9 @@ def install(server_url: str):
         except OSError:
             pass
 
-    python = _python_path()
-    capture_path = str(hooks_dir / "capture-prompt.py")
-    ingest_path = str(hooks_dir / "auto-ingest.py")
+    python = f'"{_python_path()}"'
+    capture_path = f'"{hooks_dir / "capture-prompt.py"}"'
+    ingest_path = f'"{hooks_dir / "auto-ingest.py"}"'
 
     # -- Wire hooks into ~/.claude/settings.json --
     settings_path = _claude_dir() / "settings.json"

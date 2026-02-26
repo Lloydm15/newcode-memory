@@ -10,6 +10,7 @@ import json
 import os
 import socket
 import sys
+import tempfile
 from uuid import uuid4
 
 import httpx
@@ -25,7 +26,7 @@ _MACHINE_NAME = socket.gethostname()
 _session_conversation_id = str(uuid4())
 
 # Write the conversation ID to a temp file so hooks can use the same ID.
-_CONVID_FILE = os.path.join(os.environ.get("TMPDIR", "/tmp"), "newcode-mcp-convid")
+_CONVID_FILE = os.path.join(tempfile.gettempdir(), "newcode-mcp-convid")
 try:
     with open(_CONVID_FILE, "w") as f:
         f.write(_session_conversation_id)
