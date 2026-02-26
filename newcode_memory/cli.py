@@ -70,6 +70,32 @@ def install(server_url: str):
     hooks_dir = _hooks_dir()
     pkg_hooks = _package_hooks_dir()
 
+    # Clean up old bash hooks from previous versions (they don't work on Windows)
+    for old_script in ["capture-prompt.sh", "auto-ingest.sh"]:
+        old_path = hooks_dir / old_script
+        if old_path.exists():
+            old_path.unlink()
+
+    # Also scrub any old .sh hook references from settings.json before writing new ones
+    settings_path = _claude_dir() / "settings.json"
+    if settings_path.exists():
+        try:
+            existing = json.loads(settings_path.read_text())
+            for event in ["UserPromptSubmit", "Stop"]:
+                event_hooks = existing.get("hooks", {}).get(event, [])
+                for group in event_hooks:
+                    group["hooks"] = [
+                        h for h in group.get("hooks", [])
+                        if not h.get("command", "").endswith(".sh")
+                    ]
+                # Remove empty groups
+                existing.get("hooks", {})[event] = [
+                    g for g in event_hooks if g.get("hooks")
+                ]
+            settings_path.write_text(json.dumps(existing, indent=2) + "\n")
+        except (json.JSONDecodeError, OSError, KeyError):
+            pass
+
     # Copy hook scripts (Python for cross-platform compatibility)
     for script_name in ["capture-prompt.py", "auto-ingest.py"]:
         src = pkg_hooks / script_name
